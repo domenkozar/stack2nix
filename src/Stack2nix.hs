@@ -31,7 +31,6 @@ stack2nix args@Args{..} = do
   ensureExecutableExists "nix-prefetch-git" "nix-prefetch-scripts"
   assertMinVer "git" "2"
   assertMinVer "cabal" "2"
-  setEnv "GIT_QUIET" "y"
   updateCabalPackageIndex
   -- cwd <- getCurrentDirectory
   -- let projRoot = if isAbsolute argUri then argUri else cwd </> argUri
@@ -56,7 +55,9 @@ stack2nix args@Args{..} = do
       let externalCmd = if argGitRecursive
                           then CloneRecursive argUri tmpDir
                           else Clone argUri tmpDir
-      void $ git $ OutsideRepo externalCmd
+      (code, stdout, stderr) <- git $ OutsideRepo externalCmd
+      putStrLn stdout
+      putStrLn stderr
       case argRev of
         Just r  -> void $ git $ InsideRepo tmpDir (Checkout r)
         Nothing -> return mempty
