@@ -23,6 +23,7 @@ with pkgs.haskell.lib;
     # needed until we upgrade to 18.09
     yaml = disableCabalFlag super.yaml "system-libyaml";
 
+
     # https://github.com/NixOS/cabal2nix/issues/146
     hinotify = if pkgs.stdenv.isDarwin then self.hfsevents else super.hinotify;
   };
